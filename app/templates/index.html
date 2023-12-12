@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Application readyness checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="grid h-screen w-screen place-items-center">
+    <div>
+      <h1 class="text-xl text-gray-800 font-bold">
+        Check if you're application is alive
+      </h1>
+      <form
+        action="/"
+        method="POST"
+        class="grid grid-cols-1 grid-flow-row place-items-center gap-4"
+      >
+        <input
+          type="text"
+          name="url"
+          value="{{ url }}"
+          class="px-4 py-2 rounded w-96 shadow-lg"
+          placeholder="Enter your application url"
+        />
+        <button
+          type="submit"
+          class="px-4 py-2 bg-green-400 rounded w-fit m-auto"
+        >
+          Check
+        </button>
+      </form>
+    </div>
+    <div class="w-1/2">
+      <div
+        class="coding inverse-toggle px-5 pt-4 shadow-lg text-gray-100 text-sm font-mono subpixel-antialiased bg-gray-800 pb-6 pt-4 rounded-lg leading-normal overflow-hidden text-left"
+      >
+        <div class="top mb-2 flex">
+          <div class="h-3 w-3 bg-red-500 rounded-full"></div>
+          <div class="ml-2 h-3 w-3 bg-orange-300 rounded-full"></div>
+          <div class="ml-2 h-3 w-3 bg-green-500 rounded-full"></div>
+        </div>
+        <div class="mt-4 flex flex-col overflow-">
+          <span class="text-green-400">computer:~$ ping {{ url }}</span>
+          <p
+            class="flex-1 typing items-center whitespace-pre-line break-words text-clip overflow-hidden"
+          >
+            {{ response }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
