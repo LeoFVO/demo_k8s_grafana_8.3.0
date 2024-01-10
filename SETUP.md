@@ -20,7 +20,7 @@ docker push leofvo/demo-k8s-pentesting:1.0
 ### Provisioning the cluster
 
 ```bash
-kind create cluster --name grafana-lfi
+kind create cluster --name grafana-pt-afr
 kubectl apply -f  ./k8s/
 # expose the web application on port 8080 of your computer
 kubectl port-forward deployment/webapp 8080 8080
